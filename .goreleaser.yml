@@ -1,0 +1,44 @@
+# This is an example goreleaser.yaml file with some sane defaults.
+# Make sure to check the documentation at http://goreleaser.com
+before:
+  hooks:
+    # You may remove this if you don't use go modules.
+    - go mod tidy
+    - go mod download
+#     # you may remove this if you don't need go generate
+#     - go generate ./...
+project_name: load-cpu-go
+# release:
+#   draft: true
+builds:
+  - binary: load-cpu
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+nfpms:
+  - id: default
+    vendor: freakinhippie
+    maintainer: Joshua Colson <joshua.colson@gmail.com>
+    description: CPU Load Generator
+    license: MIT
+    formats:
+      - deb
+      - rpm
+    bindir: /usr/local/bin
+    release: 1
+checksum:
+  name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
+snapshot:
+  name_template: "{{ .Tag }}-{{ .CommitTimestamp }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
